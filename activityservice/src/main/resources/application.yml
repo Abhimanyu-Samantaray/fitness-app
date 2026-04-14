@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: activityservice
+
+  data:
+    mongodb:
+      uri: mongodb+srv://asssamantaray_db_user:K1RthSa2bqhW64ND@cluster0.zbipirn.mongodb.net/activity_service?retryWrites=true&w=majority
+
+server:
+  port: 8082

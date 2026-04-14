@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -25,6 +26,12 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getAll() {
         List<UserResponse> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<Optional<UserResponse>> getUser(@PathVariable String userId) {
+        Optional<UserResponse> user = userService.getSingleUser(userId);
+        return ResponseEntity.ok(user);
     }
 
 }

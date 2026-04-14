@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +62,24 @@ public class UserService {
                     response.setUpdatedAt(user.getUpdatedAt());
                     return response;
                 }).toList();
+    }
+
+    public Optional<UserResponse> getSingleUser(String userId) {
+
+        Optional<User> user =  userRepository.findById(userId);
+
+       return Optional.ofNullable(user.map(usr -> {
+                   UserResponse obj = new UserResponse();
+                   obj.setId(usr.getId());
+                   obj.setFirstName(usr.getFirstName());
+                   obj.setLastName(usr.getLastName());
+                   obj.setEmail(usr.getEmail());
+                   obj.setPassword(usr.getPassword());
+                   obj.setRole(usr.getRole());
+                   obj.setCreatedAt(usr.getCreatedAt());
+                   obj.setUpdatedAt(usr.getUpdatedAt());
+                   return obj;
+               })
+               .orElseThrow(() -> UserException.userNotFound(userId)));
     }
 }

@@ -15,4 +15,10 @@ public class UserException extends RuntimeException {
         this.status = httpStatus;
     }
 
+    public static UserException userNotFound(String userId) {
+        return new UserException(
+                "User not found with id: " + userId,
+                HttpStatus.NOT_FOUND
+        );
+    }
 }

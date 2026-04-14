@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -42,4 +44,22 @@ public class UserService {
         return response;
     }
 
+    public List<UserResponse> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> {
+                    UserResponse response = new UserResponse();
+                    response.setId(user.getId());
+                    response.setFirstName(user.getFirstName());
+                    response.setLastName(user.getLastName());
+                    response.setEmail(user.getEmail());
+                    response.setPassword(user.getPassword());
+                    response.setRole(user.getRole());
+                    response.setCreatedAt(user.getCreatedAt());
+                    response.setUpdatedAt(user.getUpdatedAt());
+                    return response;
+                }).toList();
+    }
 }

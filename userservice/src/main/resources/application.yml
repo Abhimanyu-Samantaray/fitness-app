@@ -2,15 +2,16 @@ spring:
   application:
     name: userservice
 
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
+#  Live
 #  datasource:
-#    url: jdbc:postgresql://ep-bitter-math-a1k4twcv.ap-southeast-1.aws.neon.tech/fitness_users?sslmode=require
-#    username: neondb_owner
-#    password: npg_u24JtoOvMBCh
+#    url: ${DB_URL}
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+  #Local
+  datasource:
+    url: jdbc:postgresql://ep-bitter-math-a1k4twcv.ap-southeast-1.aws.neon.tech/fitness_users?sslmode=require
+    username: neondb_owner
+    password: npg_u24JtoOvMBCh
 
   jpa:
     hibernate:
@@ -19,10 +20,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-#server:
-#  port: 8081
-
-#For Render
 server:
-  port: ${PORT:8080}
+  port: 8081
+
+#For Live
+#server:
+#  port: ${PORT:8080}
 

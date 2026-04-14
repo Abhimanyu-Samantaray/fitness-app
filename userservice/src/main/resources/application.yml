@@ -14,7 +14,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-server:
-  port: 8081
+#server:
+#  port: 8081
 
+#For Render
+server:
+  port: ${PORT:8080}
 

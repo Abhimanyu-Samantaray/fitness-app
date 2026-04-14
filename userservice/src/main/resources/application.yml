@@ -3,9 +3,14 @@ spring:
     name: userservice
 
   datasource:
-    url: jdbc:postgresql://ep-bitter-math-a1k4twcv.ap-southeast-1.aws.neon.tech/fitness_users?sslmode=require
-    username: neondb_owner
-    password: npg_u24JtoOvMBCh
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+#  datasource:
+#    url: jdbc:postgresql://ep-bitter-math-a1k4twcv.ap-southeast-1.aws.neon.tech/fitness_users?sslmode=require
+#    username: neondb_owner
+#    password: npg_u24JtoOvMBCh
 
   jpa:
     hibernate:

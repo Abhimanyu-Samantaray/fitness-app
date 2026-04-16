@@ -3,6 +3,8 @@ package com.fitness.activityservice.service;
 import com.fitness.activityservice.dto.ActivityRequest;
 import com.fitness.activityservice.dto.ActivityResponse;
 import com.fitness.activityservice.Repository.ActivityRepository;
+import com.fitness.activityservice.dto.UserResponse;
+import com.fitness.activityservice.exception.UserNotFoundException;
 import com.fitness.activityservice.model.Activity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,18 @@ import java.util.Optional;
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
+    private final ApiService apiService;
 
-    public ActivityResponse addUserActivity(ActivityRequest request) {
+    public ActivityResponse addUserActivity(ActivityRequest request, String userId) {
+
+        try {
+            UserResponse validUserId = apiService.getUserId(userId).block();
+        } catch (Exception ex) {
+            throw new UserNotFoundException("User not found with id: " + userId);
+        }
 
         Activity activityObj = new Activity();
-        activityObj.setUserId(request.getUserId());
+        activityObj.setUserId(userId);
         activityObj.setType(request.getType());
         activityObj.setDuration(request.getDuration());
         activityObj.setCaloriesBurned(request.getCaloriesBurned());

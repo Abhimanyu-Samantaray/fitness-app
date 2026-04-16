@@ -16,9 +16,9 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    @PostMapping("/addActivity")
-    public ResponseEntity<ActivityResponse> addActivity(@RequestBody ActivityRequest request) {
-        return ResponseEntity.ok(activityService.addUserActivity(request));
+    @PostMapping("/addActivity/{userId}")
+    public ResponseEntity<ActivityResponse> addActivity(@RequestBody ActivityRequest request, @PathVariable String userId) {
+        return ResponseEntity.ok(activityService.addUserActivity(request, userId));
     }
 
     @GetMapping("/all")

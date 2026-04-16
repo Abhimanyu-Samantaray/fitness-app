@@ -26,6 +26,11 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getAllActivities());
     }
 
+    @GetMapping("/{activityId}")
+    public ActivityResponse getActivity(@PathVariable String activityId) {
+        return activityService.getActivitiesByActivityId(activityId);
+    }
+
 
 
 }

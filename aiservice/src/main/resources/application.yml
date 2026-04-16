@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: aiservice
+
+  data:
+    mongodb:
+      uri: ${DB_URL}
+
+server:
+  port: ${PORT:8080}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}

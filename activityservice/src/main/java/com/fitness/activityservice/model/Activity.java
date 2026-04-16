@@ -1,4 +1,4 @@
-package com.fitness.activityservice.mode;
+package com.fitness.activityservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

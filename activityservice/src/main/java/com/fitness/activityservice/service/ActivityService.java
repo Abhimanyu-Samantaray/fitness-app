@@ -3,11 +3,13 @@ package com.fitness.activityservice.service;
 import com.fitness.activityservice.dto.ActivityRequest;
 import com.fitness.activityservice.dto.ActivityResponse;
 import com.fitness.activityservice.Repository.ActivityRepository;
-import com.fitness.activityservice.mode.Activity;
+import com.fitness.activityservice.model.Activity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +34,7 @@ public class ActivityService {
 
     private ActivityResponse activityResponse(Activity savedActivity) {
 
-        ActivityResponse resObj = new ActivityResponse();
-
-        resObj.setId(savedActivity.getId());
-        resObj.setUserId(savedActivity.getUserId());
-        resObj.setType(savedActivity.getType());
-        resObj.setDuration(savedActivity.getDuration());
-        resObj.setCaloriesBurned(savedActivity.getCaloriesBurned());
-        resObj.setStartTime(savedActivity.getStartTime());
-        resObj.setAdditionalMetrics(savedActivity.getAdditionalMetrics());
-        resObj.setCreatedAt(savedActivity.getCreatedAt());
-        resObj.setUpdatedAt(savedActivity.getUpdatedAt());
-
-        return resObj;
+        return getActivityResponse(savedActivity);
     }
 
     public List<ActivityResponse> getAllActivities() {
@@ -53,6 +43,33 @@ public class ActivityService {
 
         return getAll.stream()
                 .map(this::activityResponse).toList();
+
+    }
+
+    private static ActivityResponse getActivityResponse(Activity activity) {
+        ActivityResponse obj = new ActivityResponse();
+
+        obj.setId(activity.getId());
+        obj.setUserId(activity.getUserId());
+        obj.setType(activity.getType());
+        obj.setDuration(activity.getDuration());
+        obj.setCaloriesBurned(activity.getCaloriesBurned());
+        obj.setStartTime(activity.getStartTime());
+        obj.setAdditionalMetrics(activity.getAdditionalMetrics());
+        obj.setCreatedAt(activity.getCreatedAt());
+        obj.setUpdatedAt(activity.getUpdatedAt());
+        return obj;
+    }
+
+    public ActivityResponse getActivitiesByActivityId(String activityId) {
+
+        Optional<Activity> activities = activityRepository.findById(activityId);
+
+        Activity activity = activityRepository.findById(activityId)
+                .orElseThrow(() -> new RuntimeException(
+                        "No activity found for id: " + activityId));
+
+        return getActivityResponse(activity);
 
     }
 }

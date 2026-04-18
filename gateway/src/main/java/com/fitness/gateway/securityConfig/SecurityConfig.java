@@ -22,6 +22,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(cors -> {})   // 🔥 IMPORTANT FIX
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)   // ✅ ADD
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)   // ✅ ADD
                 .authorizeExchange(exchange -> exchange

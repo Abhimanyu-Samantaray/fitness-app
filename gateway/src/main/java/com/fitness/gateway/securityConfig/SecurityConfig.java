@@ -14,23 +14,42 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(cors -> {})   // 🔥 IMPORTANT FIX
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)   // ✅ ADD
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)   // ✅ ADD
+
+                // ✅ NEW STYLE (NO deprecated and())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/auth/**").permitAll() // ✅ public
-                        .anyExchange().permitAll()   // 🔒 secure others
+                        .pathMatchers("/api/auth/**").permitAll()
+                        .anyExchange().permitAll()
                 )
                 .build();
     }
 
-}
+    @Bean
+    public org.springframework.web.cors.reactive.CorsConfigurationSource corsConfigurationSource() {
 
+        org.springframework.web.cors.CorsConfiguration config =
+                new org.springframework.web.cors.CorsConfiguration();
+
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://fitness-application-react-frontend.onrender.com");
+
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+
+        org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource source =
+                new org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+}

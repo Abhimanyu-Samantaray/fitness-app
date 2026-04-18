@@ -13,9 +13,16 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
 
         CorsConfiguration config = new CorsConfiguration();
+
+        // ✅ Local frontend
         config.addAllowedOrigin("http://localhost:5173");
+
+        // ✅ Production frontend (Render)
+        config.addAllowedOrigin("https://fitness-application-react-frontend.onrender.com");
+
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();

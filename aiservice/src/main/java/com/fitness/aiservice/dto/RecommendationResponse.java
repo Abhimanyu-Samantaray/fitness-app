@@ -24,4 +24,5 @@ public class RecommendationResponse {
     private List<String> improvements;
     private List<String> suggestions;
     private List<String> safetyTips;
+
 }

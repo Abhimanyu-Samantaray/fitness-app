@@ -17,11 +17,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(userService.register(request));
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<UserResponse>> getAll() {
         List<UserResponse> users = userService.getAllUsers();

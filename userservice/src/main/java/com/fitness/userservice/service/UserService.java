@@ -5,11 +5,15 @@ import com.fitness.userservice.dto.UserResponse;
 import com.fitness.userservice.exception.UserException;
 import com.fitness.userservice.model.User;
 import com.fitness.userservice.repository.UserRepository;
+import com.fitness.userservice.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,6 +21,22 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+
+    public Map<String, String> login(String email, String password) {
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        if(!passwordEncoder.matches(password, user.getPassword()))  throw new RuntimeException("Invalid credentials");
+
+
+        String token = jwtUtil.generateToken(user.getId(), user.getRole().name(), user.getEmail());
+
+        return Map.of(
+                "token", token
+        );
+    }
 
     public UserResponse register(RegisterRequest request) {
 
@@ -26,7 +46,7 @@ public class UserService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
 

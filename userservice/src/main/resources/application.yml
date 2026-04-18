@@ -31,3 +31,6 @@ eureka:
 server:
   port: ${PORT:8080}
 
+internal:
+  secret: ${USER_SERVICE_INTERNAL_SECRET}
+

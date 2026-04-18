@@ -85,4 +85,5 @@ public class Aiservice {
             throw new RuntimeException("Failed to parse Gemini response", e);
         }
     }
+
 }

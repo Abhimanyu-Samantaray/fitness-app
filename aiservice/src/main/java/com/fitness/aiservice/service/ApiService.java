@@ -17,12 +17,16 @@ public class ApiService {
     private final WebClient.Builder webClientBuilder;
     private final WebClient.Builder externalWebClient;
 
+    private final String internalKey;
+
     public ApiService(
             @Qualifier("loadBalancedWebClient") WebClient.Builder loadBalancedWebClient,
-            @Qualifier("externalWebClient") WebClient.Builder externalWebClient) {
+            @Qualifier("externalWebClient") WebClient.Builder externalWebClient,
+            @Value("${Internal.gateway.key}") String internalKey) {
 
         this.webClientBuilder = loadBalancedWebClient;
         this.externalWebClient = externalWebClient;
+        this.internalKey = internalKey;
     }
 
     @Value("${gemini.api.key}")
@@ -34,6 +38,7 @@ public class ApiService {
         return webClientBuilder.build()
                 .get()
                 .uri("http://ACTIVITYSERVICE/api/activities/{activityId}", activityId)
+                .header("X-Internal-Key", internalKey)
                 .retrieve()
                 .bodyToMono(ActivityResponse.class);
     }

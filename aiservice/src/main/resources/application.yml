@@ -24,5 +24,6 @@ gemini:
   api:
     key: ${GEMINI_API_KEY}
 
-internal:
-  secret: ${AI_SERVICE_INTERNAL_SECRET}
+Internal:
+  gateway:
+    key: ${AI-SERVICE-INTERNAL-SECURITY-KEY}

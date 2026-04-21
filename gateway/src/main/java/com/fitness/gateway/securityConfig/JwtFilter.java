@@ -1,7 +1,7 @@
-package com.fitness.gateway.jwtfilter;
+package com.fitness.gateway.securityConfig;
 
-import com.fitness.gateway.jwtutility.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpHeaders;
@@ -12,36 +12,34 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class JwtFilter implements GlobalFilter {
 
     private final JwtUtil jwtUtil;
+    private final String secretKey;
+
+    public JwtFilter(@Value("${internal.microservice.key}") String secretKey, JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+        this.secretKey = secretKey;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        System.out.println("Entering into Filter");
-
         String path = exchange.getRequest().getURI().getPath();
-
-        System.out.println(path);
 
         // ✔ Allow public APIs
         if (path.startsWith("/api/auth")) {
             return chain.filter(exchange);
         }
-        System.out.println("========== GATEWAY DEBUG 1 ==========");
+
         // ✔ Allow CORS preflight
         if ("OPTIONS".equalsIgnoreCase(exchange.getRequest().getMethod().name())) {
             return chain.filter(exchange);
         }
-        System.out.println("========== GATEWAY DEBUG 2 ==========");
-
 
         String authHeader = exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION);
-        System.out.println("AUTH HEADER = " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -49,8 +47,6 @@ public class JwtFilter implements GlobalFilter {
         }
 
         String token = authHeader.substring(7);
-
-        System.out.println("TOKEN = " + token);
 
         try {
             if (!jwtUtil.validateToken(token)) {
@@ -64,9 +60,14 @@ public class JwtFilter implements GlobalFilter {
         }
 
         String userId = jwtUtil.extractUserId(token);
+        String emailId = jwtUtil.extractEmail(token);
+        String userRole = jwtUtil.extractRole(token);
 
         ServerHttpRequest request = exchange.getRequest().mutate()
                 .header("X-User-Id", userId)
+                .header("X-User-Email", emailId)
+                .header("X-User-Role", userRole)
+                .header("X-Internal-Key", secretKey)
                 .build();
 
         return chain.filter(exchange.mutate().request(request).build());

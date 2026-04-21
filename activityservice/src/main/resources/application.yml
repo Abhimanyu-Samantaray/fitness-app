@@ -19,5 +19,6 @@ eureka:
   instance:
     prefer-ip-address: true
 
-internal:
-  secret: ${ACTIVITY_SERVICE_INTERNAL_SECRET}
+Internal:
+  gateway:
+    key: ${ACTIVITY-SERVICE-INTERNAL-SECURITY-KEY}

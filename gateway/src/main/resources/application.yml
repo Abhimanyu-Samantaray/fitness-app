@@ -58,3 +58,12 @@ eureka:
 
 server:
   port: ${PORT:8080}
+
+
+secret:
+  jwt:
+    key: ${JWT-SIGNING-KEY}
+
+internal:
+  microservice:
+    key: ${INTERNAL-API-SERVICE-KEY}

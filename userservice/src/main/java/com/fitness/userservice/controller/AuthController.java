@@ -1,6 +1,7 @@
 package com.fitness.userservice.controller;
 
 import com.fitness.userservice.dto.LoginRequest;
+import com.fitness.userservice.dto.LoginResponse;
 import com.fitness.userservice.dto.RegisterRequest;
 import com.fitness.userservice.dto.UserResponse;
 import com.fitness.userservice.service.UserService;
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
         return userService.login(request.getEmail(), request.getPassword());
     }
 

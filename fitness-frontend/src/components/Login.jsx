@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
@@ -21,14 +24,23 @@ export default function Login() {
                 }
             );
             const token = response.data.token;
-            console.log("JWT Token:", token);
+          
              // store token
             localStorage.setItem("jwt", token);
 
             alert("Login successful!");
 
             // optional: redirect
-            window.location.href = "/dashboard";
+            // decode token
+            const decoded = jwtDecode(token);
+            const role = decoded.role;
+
+            // role-based navigation
+            if (role === "ADMIN") {
+                navigate("/admin");
+            } else {
+                navigate("/dashboard");
+            }
 
             } catch (err) {
                 console.log(err);

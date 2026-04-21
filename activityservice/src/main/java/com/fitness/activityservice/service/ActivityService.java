@@ -46,11 +46,11 @@ public class ActivityService {
         return getActivityResponse(savedActivity);
     }
 
-    public List<ActivityResponse> getAllActivities() {
+    public List<ActivityResponse> getAllActivities(String userId) {
 
-        List<Activity> getAll = activityRepository.findAll();
+        List<Activity> getAllByUserID = activityRepository.findByUserId(userId);
 
-        return getAll.stream()
+        return getAllByUserID.stream()
                 .map(this::activityResponse).toList();
 
     }

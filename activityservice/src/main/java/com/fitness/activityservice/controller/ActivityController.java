@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
@@ -19,10 +21,10 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.addUserActivity(request, userId));
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<ActivityResponse>> getAllActivity() {
-//        return ResponseEntity.ok(activityService.getAllActivities());
-//    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ActivityResponse>> getAllActivity(@PathVariable String  userId) {
+        return ResponseEntity.ok(activityService.getAllActivities(userId));
+    }
 //
 //    @GetMapping("/{activityId}")
 //    public ActivityResponse getActivity(@PathVariable String activityId) {

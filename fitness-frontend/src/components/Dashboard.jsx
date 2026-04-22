@@ -15,19 +15,13 @@ export default function UserDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
 
-    console.log(token);
-    
     if (!token) {
       setError("No token found. Please login again.");
       setLoading(false);
       return;
     } 
-
-    const decoded = jwtDecode(token);
-    // In Spring Boot, the userId is usually in 'sub' or a custom 'userId' field
-    const userId = decoded.sub; 
     
-    fetch(`${BASE_URL}/api/activities/${userId}`, {
+    fetch(`${BASE_URL}/api/activities/`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,

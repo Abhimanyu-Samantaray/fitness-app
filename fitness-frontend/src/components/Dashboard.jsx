@@ -1,23 +1,58 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { jwtDecode } from "jwt-decode";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
+} from "recharts";
 
-const BASE_URL = "https://fitness-app-activity-service.onrender.com";
+const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
 export default function UserDashboard() {
 
   const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
 
-    fetch(`${BASE_URL}/api/activities`, {
+    console.log(token);
+    
+    if (!token) {
+      setError("No token found. Please login again.");
+      setLoading(false);
+      return;
+    } 
+
+    const decoded = jwtDecode(token);
+    // In Spring Boot, the userId is usually in 'sub' or a custom 'userId' field
+    const userId = decoded.sub; 
+    
+    fetch(`${BASE_URL}/api/activities/${userId}`, {
+      method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
     })
-      .then(res => res.json())
-      .then(data => setActivities(data))
-      .catch(err => console.error(err));
+      .then(res => {
+        console.log("STATUS:", res.status); // 🔍 debug
+
+        if (!res.ok) {
+          throw new Error("Unauthorized or API error");
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log("DATA:", data); // 🔍 debug
+        setActivities(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setError(err.message);
+        setLoading(false);
+      });
+
   }, []);
 
   const chartData = useMemo(
@@ -31,6 +66,16 @@ export default function UserDashboard() {
 
   const totalCalories = activities.reduce((s, a) => s + a.caloriesBurned, 0);
   const totalDuration = activities.reduce((s, a) => s + a.duration, 0);
+
+  // ✅ Loading UI
+  if (loading) {
+    return <h3 className="text-center mt-5">Loading...</h3>;
+  }
+
+  // ✅ Error UI
+  if (error) {
+    return <h3 className="text-center mt-5 text-danger">{error}</h3>;
+  }
 
   return (
     <div className="container-fluid bg-light min-vh-100 py-4">
@@ -92,6 +137,10 @@ export default function UserDashboard() {
         <h5 className="mb-3">Recent Activities</h5>
 
         <div className="row g-3">
+
+          {activities.length === 0 && (
+            <p className="text-muted">No activities found</p>
+          )}
 
           {activities.map((a) => (
             <div key={a.id} className="col-md-4">

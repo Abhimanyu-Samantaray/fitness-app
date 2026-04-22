@@ -3,6 +3,7 @@ package com.fitness.activityservice.controller;
 import com.fitness.activityservice.dto.ActivityRequest;
 import com.fitness.activityservice.dto.ActivityResponse;
 import com.fitness.activityservice.service.ActivityService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,12 +24,12 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.addUserActivity(request, userId));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<ActivityResponse>> getAllActivity() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName(); // comes from JWT
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ActivityResponse>> getAllActivity(@PathVariable String userId) {
         return ResponseEntity.ok(activityService.getAllActivities(userId));
     }
+
+
 //
 //    @GetMapping("/{activityId}")
 //    public ActivityResponse getActivity(@PathVariable String activityId) {

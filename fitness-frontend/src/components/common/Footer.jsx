@@ -19,7 +19,7 @@ export default function Footer() {
 const styles = {
     footer: {
         width: "100%",
-        backgroundColor: "#1976d2",
+        backgroundColor: "rgb(70 152 157)",
         color: "white",
         padding: "15px 0",
         marginTop: "auto"

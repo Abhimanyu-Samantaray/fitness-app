@@ -1,7 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Login from "./components/Login";
 import {Routes, Route} from "react-router-dom";
 import UserDashboard from "./components/Dashboard";
+import FitnessHome from "./components/FitnessHome";
 import AdminDashboard from "./components/admin/Dashboard";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/common/ProtectedRoutes";
@@ -20,6 +22,17 @@ function App() {
             <main className="content">
 
                 <Routes>
+
+                    <Route
+                        path="/"
+                        element={
+                            <PublicRoute>
+                                <FitnessHome />
+                            </PublicRoute>
+                        }
+                    />
+
+
                     <Route
                         path="/login"
                         element={

@@ -7,7 +7,7 @@ export default function Navbar() {
 
     const handleLogout = () => {
         localStorage.removeItem("jwt");
-        navigate("/");
+        navigate("/login");
     };
 
     return (

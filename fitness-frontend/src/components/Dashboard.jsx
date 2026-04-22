@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
+import { Link } from "react-router-dom";
 
 const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
@@ -45,6 +46,8 @@ export default function UserDashboard() {
         console.error(err);
         setError(err.message);
         setLoading(false);
+        localStorage.removeItem("jwt");
+        navigate("/");
       });
 
   }, []);
@@ -83,12 +86,14 @@ export default function UserDashboard() {
         <div className="row g-4">
 
           <div className="col-md-4">
-            <div className="card text-white bg-primary shadow-lg rounded-4">
-              <div className="card-body">
-                <h6>Total Activities</h6>
-                <h2>{activities.length}</h2>
+            <Link to="/dashboard/add-activity" className="text-decoration-none">
+              <div className="card text-white bg-primary shadow-lg rounded-4">
+                <div className="card-body">
+                  <h6>Total Activities</h6>
+                  <h2>{activities.length}</h2>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <div className="col-md-4">

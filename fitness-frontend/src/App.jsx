@@ -8,43 +8,58 @@ import ProtectedRoute from "./components/common/ProtectedRoutes";
 import AdminRoute from "./components/common/AdminRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import Footer from "./components/common/Footer";
+import AddActivity from "./components/AddActivity";
 
 function App() {
+
     return (
         <>
+         <div className="app-container">
             <Navbar/>
 
-            <Routes>
-                 <Route
-                    path="/"
-                    element={
-                        <PublicRoute>
-                            <Login />
-                        </PublicRoute>
-                    }
-                />
+            <main className="content">
 
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <UserDashboard />
-                        </ProtectedRoute>
-                    }
-                />
+                <Routes>
+                    <Route
+                        path="/login"
+                        element={
+                            <PublicRoute>
+                                <Login />
+                            </PublicRoute>
+                        }
+                    />
 
-                 <Route
-                    path="/admin"
-                    element={
-                        <AdminRoute>
-                            <AdminDashboard />
-                        </AdminRoute>
-                    }
-                />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <UserDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/dashboard/add-activity"
+                        element={
+                            <ProtectedRoute>
+                            <AddActivity />
+                            </ProtectedRoute>
+                        }
+                    />
 
-            </Routes>
+                    <Route
+                        path="/admin"
+                        element={
+                            <AdminRoute>
+                                <AdminDashboard />
+                            </AdminRoute>
+                        }
+                    />
+
+                </Routes>
+            </main>
 
             <Footer/>
+        </div>
         </>
     );
 }

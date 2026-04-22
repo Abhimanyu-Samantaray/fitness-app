@@ -2,3 +2,23 @@ body {
     margin: 0;
     padding: 0;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#root {
+    height: 100%;
+}
+
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+
+.content {
+    flex: 1;   /* 👈 pushes footer to bottom */
+}

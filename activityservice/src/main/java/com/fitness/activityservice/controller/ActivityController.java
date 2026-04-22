@@ -19,8 +19,8 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    @PostMapping("/addActivity/{userId}")
-    public ResponseEntity<ActivityResponse> addActivity(@RequestBody ActivityRequest request, @PathVariable String userId) {
+    @PostMapping("/addActivity")
+    public ResponseEntity<ActivityResponse> addActivity(@RequestBody ActivityRequest request, @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(activityService.addUserActivity(request, userId));
     }
 

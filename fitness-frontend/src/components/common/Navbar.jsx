@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
     const token = localStorage.getItem("jwt");
@@ -12,13 +13,9 @@ export default function Navbar() {
     return (
         <nav style={styles.nav}>
             <h3 style={styles.logo}>Fitness App</h3>
-
-            {/* <div style={styles.links}>
-                <Link to="/dashboard" style={styles.link}>Dashboard</Link>
-                <Link to="/users" style={styles.link}>Users</Link>
-            </div> */}
             {token &&
-                <button onClick={handleLogout} style={styles.button}>
+                <button onClick={handleLogout} className="btn btn-danger">
+                    <LogOut size={18} className="bg-info mb-1 me-1 rounded-2"/>
                     Logout
                 </button>
             }

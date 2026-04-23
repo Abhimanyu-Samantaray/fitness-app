@@ -27,4 +27,15 @@ public class ApiService {
                 .bodyToMono(UserResponse.class);
     }
 
+    public void addRecommendation(String activityId) {
+
+        webClient.build()
+                .post()
+                .uri("http://AISERVICE/api/recommendation/add/{activityId}", activityId)
+                .header("X-Internal-Key", internalKey)
+                .retrieve()
+                .bodyToMono(void.class)
+                .subscribe();
+    }
+
 }

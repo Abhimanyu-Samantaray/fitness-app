@@ -38,6 +38,10 @@ public class ActivityService {
 
         Activity savedActivity = activityRepository.save(activityObj);
 
+        String activityId = savedActivity.getId();
+
+        apiService.addRecommendation(activityId);
+
         return activityResponse(savedActivity);
     }
 

@@ -51,6 +51,10 @@ const AddActivity = () => {
                 },
                 body: JSON.stringify(finalActivity)
             });
+            if (!response.ok) {
+                throw new Error("Failed to save activity");
+            }
+
                 const data = await response.json();
                 console.log("Success:", data);
 

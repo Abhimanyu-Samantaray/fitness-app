@@ -1,6 +1,7 @@
 package com.fitness.aiservice.controller;
 
 import com.fitness.aiservice.dto.RecommendationResponse;
+import com.fitness.aiservice.model.Recommendation;
 import com.fitness.aiservice.service.Aiservice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,5 +17,10 @@ public class AiserviceController {
     @PostMapping("/add/{activityId}")
     public Mono<RecommendationResponse> getRecommendation(@PathVariable String activityId) {
         return aiservice.generateAiRecommendation(activityId);
+    }
+
+    @GetMapping("/getRecommendation/{activityId}")
+    public Mono<Recommendation> getActivityRecommendation(@PathVariable String activityId) {
+        return aiservice.getUserRecommendation(activityId);
     }
 }

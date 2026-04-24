@@ -3,6 +3,7 @@ package com.fitness.activityservice.service;
 import com.fitness.activityservice.dto.ActivityRequest;
 import com.fitness.activityservice.dto.ActivityResponse;
 import com.fitness.activityservice.Repository.ActivityRepository;
+import com.fitness.activityservice.dto.Recommendation;
 import com.fitness.activityservice.dto.UserResponse;
 import com.fitness.activityservice.exception.UserNotFoundException;
 import com.fitness.activityservice.model.Activity;

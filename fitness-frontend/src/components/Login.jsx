@@ -70,7 +70,7 @@ export default function Login() {
                         style={styles.input}
                     />
 
-                    <button type="submit" style={styles.button}>
+                    <button type="submit" className="btn btn-primary">
                         Sign In
                     </button>
                 </form>

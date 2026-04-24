@@ -86,7 +86,7 @@ export default function UserDashboard() {
         <div className="row g-4">
 
           <div className="col-md-4">
-            <Link to="/dashboard/add-activity" className="text-decoration-none">
+            <Link to="/activity-list" className="text-decoration-none">
               <div className="card text-white bg-primary shadow-lg rounded-4">
                 <div className="card-body">
                   <h6>Total Activities</h6>

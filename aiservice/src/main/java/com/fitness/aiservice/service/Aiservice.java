@@ -86,4 +86,7 @@ public class Aiservice {
         }
     }
 
+    public Mono<Recommendation> getUserRecommendation(String activityId) {
+        return aiRepository.findByActivityId(activityId);
+    }
 }

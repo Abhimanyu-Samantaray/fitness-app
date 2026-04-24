@@ -58,7 +58,7 @@ const AddActivity = () => {
                 const data = await response.json();
                 console.log("Success:", data);
 
-                //navigate("/dashboard"); // redirect after success
+                navigate(`/ai-recommendation/${data.id}`); // redirect after success
         } catch (error) {
             console.error("Error:", error);
         }
@@ -71,7 +71,7 @@ const AddActivity = () => {
                 <div className="container mb-4">
                     <div className="d-flex justify-content-between">
                         <h2 className="fw-bold text-center text-light">Add Activity</h2>
-                        <button onClick={() => navigate(-1)} className="btn btn-primary float-end">
+                        <button onClick={() => navigate(-1)} className="btn btn-sm btn-primary">
                             <ArrowLeft size={18} className="bg-info mb-1 me-1 rounded-2"/>
                             Back
                         </button>

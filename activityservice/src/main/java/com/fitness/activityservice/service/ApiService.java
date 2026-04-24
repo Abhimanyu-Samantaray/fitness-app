@@ -1,5 +1,6 @@
 package com.fitness.activityservice.service;
 
+import com.fitness.activityservice.dto.Recommendation;
 import com.fitness.activityservice.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,4 @@ public class ApiService {
                 .bodyToMono(void.class)
                 .subscribe();
     }
-
 }

@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Login from "./components/Login";
-import {Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import UserDashboard from "./components/Dashboard";
 import FitnessHome from "./components/FitnessHome";
 import AdminDashboard from "./components/admin/Dashboard";
@@ -11,6 +11,8 @@ import AdminRoute from "./components/common/AdminRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import Footer from "./components/common/Footer";
 import AddActivity from "./components/AddActivity";
+import ActivityList from "./components/ActivityList";
+import AiRecommendation from "./components/AiRecommendation";
 
 function App() {
 
@@ -20,8 +22,10 @@ function App() {
             <Navbar/>
 
             <main className="content">
-
+                
                 <Routes>
+
+                    {/*PUBLIC ROUTES*/}
 
                     <Route
                         path="/"
@@ -42,6 +46,8 @@ function App() {
                         }
                     />
 
+                    { /*USER ROUTES */}
+
                     <Route
                         path="/dashboard"
                         element={
@@ -51,13 +57,32 @@ function App() {
                         }
                     />
                     <Route
-                        path="/dashboard/add-activity"
+                        path="/activity-list"
+                        element={
+                            <ProtectedRoute>
+                            <ActivityList />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/add-activity"
                         element={
                             <ProtectedRoute>
                             <AddActivity />
                             </ProtectedRoute>
                         }
                     />
+
+                    <Route
+                        path="/ai-recommendation/:id"
+                        element={
+                            <ProtectedRoute>
+                            <AiRecommendation/>
+                            </ProtectedRoute>
+                        }
+                    />
+
+                   { /*ADMIN ROUTES */}
 
                     <Route
                         path="/admin"
@@ -69,6 +94,7 @@ function App() {
                     />
 
                 </Routes>
+                
             </main>
 
             <Footer/>

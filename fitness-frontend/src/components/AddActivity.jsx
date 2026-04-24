@@ -8,11 +8,11 @@ const AddActivity = () => {
     const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
     const [Activity, setActivity] = useState({
-        activityType: "",
+        type: "",
         duration: "",
         caloriesBurned: "",
         startTime: "",
-        metrics: {}
+        additionalMetrics: {}
     });
 
     const [metricInput, setMetricInput] = useState([
@@ -22,16 +22,16 @@ const AddActivity = () => {
         { key: "", value: "" }
     ]);
 
-    const buildMetricsObject = () => {
-        const metricsObj = {};
+    const buildadditionalMetricsObject = () => {
+        const additionalMetricsObj = {};
 
         metricInput.forEach((item) => {
             if (item.key && item.value) {
-                metricsObj[item.key] = item.value;
+                additionalMetricsObj[item.key] = item.value;
             }
         });
 
-        return metricsObj;
+        return additionalMetricsObj;
     };
     const token = localStorage.getItem("jwt");
     const handleSubmit = async (e) =>  {
@@ -39,7 +39,7 @@ const AddActivity = () => {
 
         const finalActivity = {
             ...Activity,
-            metrics: buildMetricsObject()
+            additionalMetrics: buildadditionalMetricsObject()
         };
 
         try {
@@ -58,7 +58,7 @@ const AddActivity = () => {
                 const data = await response.json();
                 console.log("Success:", data);
 
-                navigate("/dashboard"); // redirect after success
+                //navigate("/dashboard"); // redirect after success
         } catch (error) {
             console.error("Error:", error);
         }
@@ -85,17 +85,17 @@ const AddActivity = () => {
                                 {/* Activity Type */}
                                 <div className="mb-3">
                                     <label className="form-label">Activity Type</label>
-                                    <select className="form-select" value={Activity.activityType} onChange={(e) => setActivity({ ...Activity , activityType: e.target.value })}>
-                                        <option>Select type</option>
-                                        <option>RUNNING</option>
-                                        <option>WALKING</option>
-                                        <option>CYCLING</option>
-                                        <option>SWIMMING</option>
-                                        <option>YOGA</option>
-                                        <option>CARDIO</option>
-                                        <option>STRETCHING</option>
-                                        <option>GYM</option>
-                                        <option>OTHER</option>
+                                    <select className="form-select" value={Activity.type || ""} onChange={(e) => setActivity({ ...Activity , type: e.target.value })}>
+                                        <option value="">Select type</option>
+                                        <option value="RUNNING">RUNNING</option>
+                                        <option value="WALKING">WALKING</option>
+                                        <option value="CYCLING">CYCLING</option>
+                                        <option value="SWIMMING">SWIMMING</option>
+                                        <option value="YOGA">YOGA</option>
+                                        <option value="CARDIO">CARDIO</option>
+                                        <option value="STRETCHING">STRETCHING</option>
+                                        <option value="GYM">GYM</option>
+                                        <option value="OTHER">OTHER</option>
                                     </select>
                                 </div>
                             </div>
@@ -138,9 +138,9 @@ const AddActivity = () => {
                                 </div>
                             </div>    
 
-                            {/* Additional Metrics */}
+                            {/* Additional additionalMetrics */}
                             <div className="mb-3">
-                                <label className="form-label">Additional Metrics</label>
+                                <label className="form-label">Additional additionalMetrics</label>
 
                                 <div className="row g-2 mb-4">
                                     <div className="col">
@@ -275,7 +275,7 @@ const AddActivity = () => {
                                 </div>
 
                                 <small className="text-muted">
-                                    Add custom metrics like heart rate, steps, speed etc.
+                                    Add custom additionalMetrics like heart rate, steps, speed etc.
                                 </small>
                             </div>
 

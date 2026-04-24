@@ -15,23 +15,35 @@ const AiRecommendation = () => {
     const [recommendation, setRecommendation] = useState(null);
 
     useEffect(() => {
-        fetch(`${BASE_URL}/api/recommendation/getRecommendation/${id}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        })
-        .then(res => {
-            console.log("Status:", res.status); // 👈 check this
-            return res.json();
-        })
-        .then(data => {
-            console.log("API Response:", data); // 👈 VERY IMPORTANT
-            setRecommendation(data);
-        })
-        .catch(err => console.error(err));
-    }, [id]);
+        let retryCount = 0;
 
-    console.log("Recommendation:", recommendation);
+        const fetchData = () => {
+            fetch(`${BASE_URL}/api/recommendation/getRecommendation/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Not ready");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.summary) {
+                    setRecommendation(data);
+                } else {
+                    throw new Error("Empty data");
+                }
+            })
+            .catch(() => {
+                if (retryCount < 5) {
+                    retryCount++;
+                    setTimeout(fetchData, 1500); // retry after 1.5 sec
+                }
+            });
+        };
+
+        fetchData();
+    }, [id]);
 
     return (
         <>
@@ -49,15 +61,15 @@ const AiRecommendation = () => {
 
                         <div className="mb-2">
                             <span className="badge bg-primary me-2">
-                            actuivity tyep
+                             {recommendation?.activityType}
                             </span>
                             <span className="badge bg-secondary">
-                            intensity
+                            {recommendation?.intensity}
                             </span>
                         </div>
 
                         <p className="mt-3 text-muted fs-5">
-                            Summary
+                            {recommendation?.summary}
                         </p>
                     </div>
                 </div>
@@ -67,41 +79,46 @@ const AiRecommendation = () => {
 
                     {/* ⚡ Improvements */}
                     <div className="col-md-4">
-                    <div className="card h-100 shadow-sm border-start border-danger border-4">
-                        <div className="card-body">
-                        <h5 className="text-danger fw-bold">⚡ Improvements</h5>
-
-                        <ul className="mt-3 ps-3">
-                            Improvement
-                        </ul>
+                        <div className="card h-100 shadow-sm border-start border-danger border-4">
+                            <div className="card-body">
+                                <h5 className="text-danger fw-bold">⚡ Improvements</h5>
+                                <ul className="mt-3 ps-3">
+                                    {recommendation?.improvements?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                     {/* 💡 Suggestions */}
                     <div className="col-md-4">
-                    <div className="card h-100 shadow-sm border-start border-success border-4">
-                        <div className="card-body">
-                        <h5 className="text-success fw-bold">💡 Suggestions</h5>
+                        <div className="card h-100 shadow-sm border-start border-success border-4">
+                            <div className="card-body">
+                                <h5 className="text-success fw-bold">💡 Suggestions</h5>
 
-                        <ul className="mt-3 ps-3">
-                            Suggestion list
-                        </ul>
+                                <ul className="mt-3 ps-3">
+                                     {recommendation?.suggestions?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                                </div>
                         </div>
-                    </div>
                     </div>
 
                     {/* 🛡 Safety Tips */}
                     <div className="col-md-4">
-                    <div className="card h-100 shadow-sm border-start border-warning border-4">
-                        <div className="card-body">
-                        <h5 className="text-warning fw-bold">🛡 Safety Tips</h5>
+                        <div className="card h-100 shadow-sm border-start border-warning border-4">
+                            <div className="card-body">
+                                <h5 className="text-warning fw-bold">🛡 Safety Tips</h5>
 
-                        <ul className="mt-3 ps-3">
-                            Seafty Tips
-                        </ul>
+                                <ul className="mt-3 ps-3">
+                                     {recommendation?.safetyTips?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                 </div>

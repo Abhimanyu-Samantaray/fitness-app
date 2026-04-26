@@ -83,7 +83,12 @@ const ActivityList = () => {
                                             <td>{act.startTime}</td>
                                             <td>N/A</td>
                                             <td className="text-center">
-                                                <button className="btn btn-outline-danger btn-sm">
+                                                <button className="btn btn-outline-danger btn-sm"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // ✅ prevents row click
+                                                        handleDelete(act.id);
+                                                    }}
+                                                >
                                                     <Trash2 size={18} className="bg-info mb-1 me-1 rounded-2"/>
                                                     Delete
                                                 </button>

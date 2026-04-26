@@ -37,11 +37,11 @@ const ActivityList = () => {
         fetchActivities();
     }, []);
 
-    if(loading) return <p>Loading Activities...</p>
+    if(loading) return <div className="text-center mt-5"><p className="fw-bold">Loading Activities...</p></div>
 
      return(
         <>
-            <div className="container mt-4">
+            <div className="container mt-4 mb-5">
                 <div className="card shadow-sm">
                     <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">Activity Log</h5>
@@ -63,19 +63,25 @@ const ActivityList = () => {
                                         <th scope="col">Duration</th>
                                         <th scope="col">Calories Burned</th>
                                         <th scope="col">Start Date</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col" className="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {/* Example Row - You would map your activities here */}
                                     {activities.map((act) => (
-                                        <tr key={act.id}>
+                                        <tr 
+                                            key={act.id}
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => navigate(`/ai-recommendation/${act.id}`)}
+                                        >
                                             <td className="ps-4">
                                                 <span className="badge rounded-pill bg-info text-dark me-2">{act.type}</span>
                                             </td>
                                             <td>{act.duration} mins</td>
                                             <td>{act.caloriesBurned} Kcal</td>
                                             <td>{act.startTime}</td>
+                                            <td>N/A</td>
                                             <td className="text-center">
                                                 <button className="btn btn-outline-danger btn-sm">
                                                     <Trash2 size={18} className="bg-info mb-1 me-1 rounded-2"/>

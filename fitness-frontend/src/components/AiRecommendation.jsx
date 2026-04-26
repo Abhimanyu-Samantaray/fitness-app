@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 
 const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
@@ -13,6 +14,7 @@ const AiRecommendation = () => {
     const { id } = useParams();
 
     const [recommendation, setRecommendation] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         let retryCount = 0;
@@ -30,6 +32,7 @@ const AiRecommendation = () => {
             .then(data => {
                 if (data && data.summary) {
                     setRecommendation(data);
+                    setLoading(false); // ✅ stop loading
                 } else {
                     throw new Error("Empty data");
                 }
@@ -37,7 +40,9 @@ const AiRecommendation = () => {
             .catch(() => {
                 if (retryCount < 5) {
                     retryCount++;
-                    setTimeout(fetchData, 1500); // retry after 1.5 sec
+                    setTimeout(fetchData, 1500);
+                } else {
+                    setLoading(false); // stop loading after retries
                 }
             });
         };
@@ -45,9 +50,42 @@ const AiRecommendation = () => {
         fetchData();
     }, [id]);
 
+    if (loading) {
+        return (
+            <div className="text-center mt-5">
+                <h5>⏳ Loading recommendation...</h5>
+            </div>
+        );
+    }
+
+    if (!loading && !recommendation) {
+        return (
+            <div className="text-center mt-5">
+                <h5 className="text-warning">
+                    ⏳ Still generating your recommendation...
+                </h5>
+                <p className="text-muted">
+                    Please wait or try again or try after sometime
+                </p>
+
+                <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => window.location.reload()}
+                >
+                    <RefreshCw size={18} className="bg-info mb-1 me-1 rounded-2" />
+                    Refresh
+                </button>
+                <button onClick={() => navigate(-1)} className="btn mt-3 ms-2 btn-primary">
+                    <ArrowLeft size={18} className="bg-info mb-1 me-1 rounded-2"/>
+                    Back
+                </button>
+            </div>
+        );
+    }
+
     return (
         <>
-            <div className="container mt-4">
+            <div className="container mt-4 mb-5">
                 {/* 🔷 Summary Card */}
                 <div className="card shadow-lg border-0 mb-4">
                     <div className="card-body">

@@ -58,7 +58,7 @@ const AddActivity = () => {
                 const data = await response.json();
                 console.log("Success:", data);
 
-                navigate(`/ai-recommendation/${data.id}`); // redirect after success
+                navigate("/activity-list"); // redirect after success
         } catch (error) {
             console.error("Error:", error);
         }

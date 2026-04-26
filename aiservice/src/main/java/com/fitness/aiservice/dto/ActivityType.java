@@ -8,5 +8,6 @@ public enum ActivityType {
     YOGA,
     CARDIO,
     STRETCHING,
+    GYM,
     OTHER
 }

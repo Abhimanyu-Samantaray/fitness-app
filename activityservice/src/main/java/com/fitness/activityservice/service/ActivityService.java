@@ -23,8 +23,12 @@ public class ActivityService {
 
     public ActivityResponse addUserActivity(ActivityRequest request, String userId) {
 
+        UserResponse validUserId;
         try {
-            UserResponse validUserId = apiService.getUserId(userId).block();
+            validUserId = apiService.getUserId(userId).block();
+            if (validUserId == null) {
+                throw new UserNotFoundException("User not found with id: " + userId);
+            }
         } catch (Exception ex) {
             throw new UserNotFoundException("User not found with id: " + userId);
         }

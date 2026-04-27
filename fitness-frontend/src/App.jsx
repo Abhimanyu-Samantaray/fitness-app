@@ -13,6 +13,7 @@ import Footer from "./components/common/Footer";
 import AddActivity from "./components/AddActivity";
 import ActivityList from "./components/ActivityList";
 import AiRecommendation from "./components/AiRecommendation";
+import Register from "./components/Register";
 
 function App() {
 
@@ -45,6 +46,16 @@ function App() {
                             </PublicRoute>
                         }
                     />
+
+                    <Route
+                        path="/register"
+                        element={
+                            <PublicRoute>
+                                <Register />
+                            </PublicRoute>
+                        }
+                    />
+
 
                     { /*USER ROUTES */}
 

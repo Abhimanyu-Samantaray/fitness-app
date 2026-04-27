@@ -12,7 +12,7 @@ export default function Navbar() {
 
     return (
         <nav style={styles.nav}>
-            <h3 style={styles.logo}>Fitness App</h3>
+            <Link to="/dashboard" style={styles.logo}><h3>Fitness App</h3></Link>
             {token &&
                 <button onClick={handleLogout} className="btn btn-danger">
                     <LogOut size={18} className="bg-info mb-1 me-1 rounded-2"/>
@@ -33,7 +33,9 @@ const styles = {
         color: "white"
     },
     logo: {
-        margin: 0
+        margin: 0,
+        textDecoration: "none",
+        color: "#fff"
     },
     links: {
         display: "flex",

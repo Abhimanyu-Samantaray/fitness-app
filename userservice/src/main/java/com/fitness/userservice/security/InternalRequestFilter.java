@@ -21,6 +21,15 @@ public class InternalRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        // ✅ Allow public APIs
+        return path.equals("/api/auth/register");
+    }
+
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull  HttpServletResponse response,
                                     @NonNull  FilterChain filterChain)

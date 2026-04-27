@@ -120,7 +120,7 @@ export default function FitnessHome() {
             <p className="mt-3">
                 Join thousands of users improving their health and lifestyle.
             </p>
-            <button className="btn btn-success mt-3 px-4">Register</button>
+            <Link to="/register"><button className="btn btn-success mt-3 px-4">Register</button></Link>
         </div>
     </div>
   );

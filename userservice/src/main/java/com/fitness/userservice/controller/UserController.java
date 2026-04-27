@@ -1,6 +1,5 @@
 package com.fitness.userservice.controller;
 
-import com.fitness.userservice.dto.RegisterRequest;
 import com.fitness.userservice.dto.UserResponse;
 import com.fitness.userservice.service.UserService;
 import lombok.AllArgsConstructor;
@@ -28,5 +27,4 @@ public class UserController {
         Optional<UserResponse> user = userService.getSingleUser(userId);
         return ResponseEntity.ok(user);
     }
-
 }

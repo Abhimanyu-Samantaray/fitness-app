@@ -39,11 +39,22 @@ const Register = () => {
                 body: JSON.stringify(formData),
             });
 
+            
+
             if(!response.ok) {
-                throw new Error("Registration Failed");
+                if (response.status === 409) {
+                    throw new Error("User Alredy Exist");
+                } else {
+                    throw new Error("Registration Failed");
+                }
             }
             const data = await response.json();
             setMessage("Registration Successful");
+
+            // ⏳ Redirect after 5 seconds
+            setTimeout(() => {
+                navigate("/login");
+            }, 5000)
 
         } catch(err) {
             setMessage("Error: " + err.message);

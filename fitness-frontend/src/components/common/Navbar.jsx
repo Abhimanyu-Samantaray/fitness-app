@@ -12,7 +12,8 @@ export default function Navbar() {
 
     return (
         <nav style={styles.nav}>
-            <Link to="/dashboard" style={styles.logo}><h3>Fitness App</h3></Link>
+            {token ? (<Link to="/dashboard" style={styles.logo}><h3>Fitness App</h3></Link>) : (<Link to="/" style={styles.logo}><h3>Fitness App</h3></Link>)}
+            
             {token &&
                 <button onClick={handleLogout} className="btn btn-danger">
                     <LogOut size={18} className="bg-info mb-1 me-1 rounded-2"/>

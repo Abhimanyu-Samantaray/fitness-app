@@ -51,7 +51,7 @@ function App() {
                         path="/register"
                         element={
                             <PublicRoute>
-                                <Register />
+                                <Register/>
                             </PublicRoute>
                         }
                     />

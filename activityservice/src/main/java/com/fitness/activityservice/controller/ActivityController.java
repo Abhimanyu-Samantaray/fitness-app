@@ -30,4 +30,10 @@ public class ActivityController {
     public ActivityResponse getActivity(@PathVariable String activityId) {
         return activityService.getActivitiesByActivityId(activityId);
     }
+
+    @DeleteMapping("/del/{activityId}")
+    public ResponseEntity<String> deleteActivity(@PathVariable String activityId) {
+        activityService.deleteActivity(activityId);
+        return ResponseEntity.ok(activityId + " Deleted Successfully");
+    }
 }

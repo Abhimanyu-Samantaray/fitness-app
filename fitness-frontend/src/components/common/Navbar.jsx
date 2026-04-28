@@ -5,6 +5,10 @@ export default function Navbar() {
     const token = localStorage.getItem("jwt");
     const navigate = useNavigate();
 
+    if(!token) {
+        navigate("/login"); 
+    }
+
     const handleLogout = () => {
         localStorage.removeItem("jwt");
         navigate("/login");

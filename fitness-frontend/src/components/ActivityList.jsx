@@ -37,6 +37,32 @@ const ActivityList = () => {
         fetchActivities();
     }, []);
 
+    const handleDelete = async (id) => {
+
+        try {
+            const response = await fetch(`${BASE_URL}/api/activities/del/${id}`, {
+                method: "DELETE",
+                headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        }
+            });
+
+            if (!response.ok) {
+                throw new Error("Delete failed");
+            }
+
+            // 🔥 Update UI instantly
+            setActivities(prev =>
+                prev.filter(activity => activity.id !== id)
+            );
+
+        } catch(err) {
+            console.log(err);
+        }
+
+    }
+
     if(loading) return <div className="text-center mt-5"><p className="fw-bold">Loading Activities...</p></div>
 
      return(

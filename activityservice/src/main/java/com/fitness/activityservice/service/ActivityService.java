@@ -87,4 +87,8 @@ public class ActivityService {
         return getActivityResponse(activity);
 
     }
+
+    public void deleteActivity(String activityId) {
+        activityRepository.deleteById(activityId);
+    }
 }

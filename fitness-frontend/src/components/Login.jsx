@@ -7,13 +7,15 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const BASE_URL = "http://localhost:8084";
+    const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
             const response =  await axios.post(
@@ -45,6 +47,8 @@ export default function Login() {
             } catch (err) {
                 console.log(err);
                 setError("Invalid credentials or server error");
+            }   finally {
+                setLoading(false);
             }
         }; 
 
@@ -70,8 +74,8 @@ export default function Login() {
                         style={styles.input}
                     />
 
-                    <button type="submit" className="btn btn-primary">
-                        Sign In
+                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                        {loading ? "Signing in..." : "Sign In"}
                     </button>
                 </form>
 

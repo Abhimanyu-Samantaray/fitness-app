@@ -6,7 +6,7 @@ import React,{useState, useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "http://localhost:8084";
+const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
 
 const ActivityList = () => {

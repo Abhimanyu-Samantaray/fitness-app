@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 
-const BASE_URL = "http://localhost:8084";
+const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
 export default function UserDashboard() {
 

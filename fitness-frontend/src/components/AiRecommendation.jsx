@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 
-const BASE_URL = "http://localhost:8084";
+const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
 const AiRecommendation = () => {
     const token = localStorage.getItem("jwt");

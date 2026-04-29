@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
 import { useState } from "react";
+import BASE_URL from "./apiConfig/gateWay";
 
 const AddActivity = () => {
 
     const navigate = useNavigate();
-    const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+
 
     const [Activity, setActivity] = useState({
         type: "",

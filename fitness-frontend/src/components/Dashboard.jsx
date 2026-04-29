@@ -4,8 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
 import { Link } from "react-router-dom";
-
-const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+import BASE_URL from "./apiConfig/gateWay";
 
 export default function UserDashboard() {
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
+import BASE_URL from "./apiConfig/gateWay";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -9,8 +10,6 @@ export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
-    const BASE_URL = "https://fitness-app-0ulb.onrender.com";
 
     const handleSubmit = async (e) => {
         e.preventDefault();

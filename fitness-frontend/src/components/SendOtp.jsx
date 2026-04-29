@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+import BASE_URL from "./apiConfig/gateWay";
 
 const SendOtp = () => {
 

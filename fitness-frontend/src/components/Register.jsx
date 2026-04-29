@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const BASE_URL = "http://localhost:8084";
+import BASE_URL from "./apiConfig/gateWay";
 
 const Register = () => {
     const navigate = useNavigate();

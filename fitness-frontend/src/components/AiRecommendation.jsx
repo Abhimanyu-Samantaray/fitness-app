@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
-
-const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+import BASE_URL from "./apiConfig/gateWay";
 
 const AiRecommendation = () => {
     const token = localStorage.getItem("jwt");

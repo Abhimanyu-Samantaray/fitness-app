@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+const BASE_URL = "http://localhost:8084";
 
 const Register = () => {
     const navigate = useNavigate();

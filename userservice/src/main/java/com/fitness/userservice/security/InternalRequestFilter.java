@@ -25,7 +25,7 @@ public class InternalRequestFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         // ✅ Allow public APIs
-        return path.equals("/api/auth/register");
+        return path.startsWith("/api/auth");
     }
 
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -9,7 +9,7 @@ export default function Login() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+    const BASE_URL = "http://localhost:8084";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -76,7 +76,7 @@ export default function Login() {
                 </form>
 
                 <p style={styles.footerText}>
-                    Forgot password?
+                    <Link to="/send-otp">Forgot password?</Link>
                 </p>
                  {error && (
                     <p style={{ color: "red", marginTop: "10px" }}>

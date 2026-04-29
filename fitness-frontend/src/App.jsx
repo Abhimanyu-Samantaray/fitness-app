@@ -14,6 +14,9 @@ import AddActivity from "./components/AddActivity";
 import ActivityList from "./components/ActivityList";
 import AiRecommendation from "./components/AiRecommendation";
 import Register from "./components/Register";
+import SendOtp from "./components/SendOtp";
+import VerifyOtp from "./components/VerifyOtp";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
 
@@ -52,6 +55,33 @@ function App() {
                         element={
                             <PublicRoute>
                                 <Register/>
+                            </PublicRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/send-otp"
+                        element={
+                            <PublicRoute>
+                                <SendOtp/>
+                            </PublicRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/verify-otp"
+                        element={
+                            <PublicRoute>
+                                <VerifyOtp/>
+                            </PublicRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/reset-password"
+                        element={
+                            <PublicRoute>
+                                <ResetPassword/>
                             </PublicRoute>
                         }
                     />

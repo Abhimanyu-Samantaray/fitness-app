@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)   // ❗ disable basic auth
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();

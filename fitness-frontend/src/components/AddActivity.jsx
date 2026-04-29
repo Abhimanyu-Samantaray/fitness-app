@@ -5,7 +5,7 @@ import { useState } from "react";
 const AddActivity = () => {
 
     const navigate = useNavigate();
-    const BASE_URL = "https://fitness-app-0ulb.onrender.com";
+    const BASE_URL = "http://localhost:8084";
 
     const [Activity, setActivity] = useState({
         type: "",

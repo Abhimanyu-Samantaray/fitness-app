@@ -136,4 +136,15 @@ public class ApiService {
     private String safe(Object value) {
         return value == null ? "N/A" : value.toString();
     }
+
+    public  Mono<Void> updateActivityStatus(String activityId, String status) {
+
+        return  webClientBuilder.build()
+                .put()
+                .uri("http://ACTIVITYSERVICE/api/activities/{activityId}/status", activityId)
+                .bodyValue(status)
+                .retrieve()
+                .bodyToMono(Void.class);
+
+    }
 }

@@ -1,5 +1,6 @@
 package com.fitness.activityservice.dto;
 
+import com.fitness.activityservice.model.ActivityStatus;
 import com.fitness.activityservice.model.ActivityType;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ public class ActivityResponse {
     private Integer duration;
     private Integer caloriesBurned;
     private LocalDateTime startTime;
+    private ActivityStatus status;
     private Map<String, Object> additionalMetrics;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

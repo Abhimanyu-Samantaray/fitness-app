@@ -25,6 +25,7 @@ public class Activity {
     private Integer duration;
     private Integer caloriesBurned;
     private LocalDateTime startTime;
+    private ActivityStatus status = ActivityStatus.FAILED;
 
     @Field("metrics")
     private Map<String, Object> additionalMetrics;

@@ -6,8 +6,14 @@ import com.fitness.activityservice.Repository.ActivityRepository;
 import com.fitness.activityservice.dto.UserResponse;
 import com.fitness.activityservice.exception.UserNotFoundException;
 import com.fitness.activityservice.model.Activity;
+import com.fitness.activityservice.model.ActivityStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +24,7 @@ public class ActivityService {
 
     private final ActivityRepository activityRepository;
     private final ApiService apiService;
+    private final MongoTemplate mongoTemplate;
 
     public ActivityResponse addUserActivity(ActivityRequest request, String userId) {
 
@@ -37,6 +44,7 @@ public class ActivityService {
         activityObj.setDuration(request.getDuration());
         activityObj.setCaloriesBurned(request.getCaloriesBurned());
         activityObj.setStartTime(request.getStartTime());
+        activityObj.setStatus(ActivityStatus.FAILED);
         activityObj.setAdditionalMetrics(request.getAdditionalMetrics());
 
         Activity savedActivity = activityRepository.save(activityObj);
@@ -70,6 +78,7 @@ public class ActivityService {
         obj.setDuration(activity.getDuration());
         obj.setCaloriesBurned(activity.getCaloriesBurned());
         obj.setStartTime(activity.getStartTime());
+        obj.setStatus(activity.getStatus());
         obj.setAdditionalMetrics(activity.getAdditionalMetrics());
         obj.setCreatedAt(activity.getCreatedAt());
         obj.setUpdatedAt(activity.getUpdatedAt());
@@ -90,5 +99,15 @@ public class ActivityService {
 
     public void deleteActivity(String activityId) {
         activityRepository.deleteById(activityId);
+    }
+
+
+    public void updateStatus(String activityId, String status) {
+
+        Query query = new Query(Criteria.where("id").is(activityId));
+
+        Update update = new Update().set("status", status);
+
+        mongoTemplate.updateFirst(query, update, Activity.class);
     }
 }

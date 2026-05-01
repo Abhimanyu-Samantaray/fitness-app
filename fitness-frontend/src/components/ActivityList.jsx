@@ -106,7 +106,7 @@ const ActivityList = () => {
                                             <td>{act.duration} mins</td>
                                             <td>{act.caloriesBurned} Kcal</td>
                                             <td>{act.startTime}</td>
-                                            <td>N/A</td>
+                                            <td style={{ color: act.status === "SUCCESS" ? "green" : "red" }}>{act.status}!</td>
                                             <td className="text-center">
                                                 <button className="btn btn-outline-danger btn-sm"
                                                     onClick={(e) => {

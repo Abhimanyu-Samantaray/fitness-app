@@ -30,6 +30,11 @@ public class Aiservice {
                             .map(this::parseResponse)
                             .map(dto -> toEntity(userId, activityId, dto))
                             .flatMap(aiRepository::save)
+                            // Step 2: Call Activity Service to update status
+                            .flatMap(savedEntity ->
+                                    apiService.updateActivityStatus(activityId, "SUCCESS")
+                                            .thenReturn(savedEntity) // keep pipeline flow
+                            )
                             .map(this::toResponse);
                 });
     }

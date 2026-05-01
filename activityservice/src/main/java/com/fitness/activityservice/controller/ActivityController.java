@@ -6,6 +6,7 @@ import com.fitness.activityservice.service.ActivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -35,5 +36,14 @@ public class ActivityController {
     public ResponseEntity<String> deleteActivity(@PathVariable String activityId) {
         activityService.deleteActivity(activityId);
         return ResponseEntity.ok(activityId + " Deleted Successfully");
+    }
+
+    @PutMapping("/{activityId}/status")
+    public ResponseEntity<String> updateStatusAfterRecommendationAdd(
+            @PathVariable String activityId,
+            @RequestBody String status) {
+        activityService.updateStatus(activityId, status);
+
+        return ResponseEntity.ok(activityId + " Status Update Successfully");
     }
 }

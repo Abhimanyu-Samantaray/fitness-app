@@ -1,15 +1,19 @@
 package com.fitness.aiservice.service;
 
 import com.fitness.aiservice.dto.ActivityResponse;
+import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -60,16 +64,27 @@ public class ApiService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(buildRequestBody(prompt))
                 .retrieve()
-                .onStatus(status -> status.value() == 429 || status.is5xxServerError(),
-                        response -> Mono.error(new RuntimeException("Retryable error: " + response.statusCode())))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new RuntimeException("Retryable error: " + response.statusCode()))
+                )
+
+                .onStatus(status -> status.value() == 429, response -> {
+                    log.warn("🚫 Gemini rate limit hit (429). Not retrying.");
+                    return Mono.error(new IllegalStateException("Rate limit"));
+                })
                 .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(15))
+                .timeout(Duration.ofSeconds(8))
 
                 // ✅ smarter retry
                 .retryWhen(
-                        Retry.backoff(5, Duration.ofSeconds(5)) // more attempts
+                        Retry.backoff(2, Duration.ofSeconds(2)) // more attempts
                                 .maxBackoff(Duration.ofSeconds(30))
-                                .filter(ex -> ex instanceof RuntimeException) // retry only these
+                                .filter(ex ->
+                                        ex instanceof IOException ||
+                                                ex instanceof TimeoutException ||
+                                                (ex instanceof WebClientResponseException w &&
+                                                        w.getStatusCode().is5xxServerError())
+                                )
                                 .doBeforeRetry(signal ->
                                         log.warn("Retrying Gemini API... attempt: {}", signal.totalRetries() + 1))
                 )
@@ -137,14 +152,17 @@ public class ApiService {
         return value == null ? "N/A" : value.toString();
     }
 
-    public  Mono<Void> updateActivityStatus(String activityId, String status) {
+    public Mono<Void> updateActivityStatus(String activityId, String status) {
+        System.out.println("Calling Activity Service...");
 
-        return  webClientBuilder.build()
+        return webClientBuilder.build()
                 .put()
                 .uri("http://ACTIVITYSERVICE/api/activities/{activityId}/status", activityId)
                 .bodyValue(status)
                 .retrieve()
-                .bodyToMono(Void.class);
-
+                .toBodilessEntity()   // ✅ better than bodyToMono(Void.class)
+                .doOnSuccess(res -> System.out.println("Update success: " + res.getStatusCode()))
+                .doOnError(err -> System.out.println("Update failed: " + err.getMessage()))
+                .then();
     }
 }

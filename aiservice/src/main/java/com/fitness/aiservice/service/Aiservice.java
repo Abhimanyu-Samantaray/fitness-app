@@ -29,12 +29,25 @@ public class Aiservice {
                     return apiService.getAiResponse(prompt)
                             .map(this::parseResponse)
                             .map(dto -> toEntity(userId, activityId, dto))
-                            .flatMap(aiRepository::save)
-                            // Step 2: Call Activity Service to update status
+                            .flatMap(entity ->
+                                aiRepository.findByActivityId(activityId)
+                                    .flatMap(existing -> {
+                                        existing.setSummary(entity.getSummary());
+                                        existing.setImprovements(entity.getImprovements());
+                                        existing.setSuggestions(entity.getSuggestions());
+                                        existing.setSafetyTips(entity.getSafetyTips());
+                                        return aiRepository.save(existing); // update
+                                    })
+                                    .switchIfEmpty(aiRepository.save(entity)) // insert if not exists
+                            )
                             .flatMap(savedEntity ->
                                     apiService.updateActivityStatus(activityId, "SUCCESS")
-                                            .thenReturn(savedEntity) // keep pipeline flow
+                                            .doOnSuccess(v -> System.out.println("✅ Status updated"))
+                                            .doOnError(e -> System.out.println("❌ Update failed: " + e.getMessage()))
+                                            .onErrorResume(e -> Mono.empty()) // 👈 important (don’t break flow)
+                                            .thenReturn(savedEntity)
                             )
+
                             .map(this::toResponse);
                 });
     }

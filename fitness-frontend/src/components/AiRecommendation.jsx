@@ -39,7 +39,7 @@ const AiRecommendation = () => {
             .catch(() => {
                 if (retryCount < 5) {
                     retryCount++;
-                    setTimeout(fetchData, 1500);
+                    setTimeout(fetchData, 10);
                 } else {
                     setLoading(false); // stop loading after retries
                 }
@@ -61,10 +61,10 @@ const AiRecommendation = () => {
         return (
             <div className="text-center mt-5">
                 <h5 className="text-warning">
-                    ⏳ Still generating your recommendation...
+                    ⏳ Recommendation not Generated, Please go back and spin the record...
                 </h5>
                 <p className="text-muted">
-                    Please wait or try again or try after sometime
+                    Please go back & try again, Thank you
                 </p>
 
                 <button

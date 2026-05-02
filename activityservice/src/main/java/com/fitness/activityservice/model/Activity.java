@@ -25,7 +25,7 @@ public class Activity {
     private Integer duration;
     private Integer caloriesBurned;
     private LocalDateTime startTime;
-    private ActivityStatus status = ActivityStatus.FAILED;
+    private ActivityStatus status = ActivityStatus.PENDING;
 
     @Field("metrics")
     private Map<String, Object> additionalMetrics;

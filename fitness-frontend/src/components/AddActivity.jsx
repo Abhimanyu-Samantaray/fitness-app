@@ -7,6 +7,7 @@ const AddActivity = () => {
 
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
 
     const [Activity, setActivity] = useState({
         type: "",
@@ -37,6 +38,7 @@ const AddActivity = () => {
     const token = localStorage.getItem("jwt");
     const handleSubmit = async (e) =>  {
         e.preventDefault();
+        setLoading(true);
 
         const finalActivity = {
             ...Activity,
@@ -281,9 +283,9 @@ const AddActivity = () => {
                             </div>
 
                             {/* Submit Button */}
-                            <button className="btn btn-primary mt-3 ms-3" style={{ width: "110px" }}>
+                            <button className="btn btn-primary mt-3 ms-3" style={{ width: "150px" }}>
                                 <Send size={18} className="bg-info mb-1 me-1 rounded-2"/>
-                                Submit
+                                 {loading ? "Submiting..." : "Submit"}
                             </button>
                         </div>    
                     </form>

@@ -23,4 +23,9 @@ public class AiserviceController {
     public Mono<Recommendation> getActivityRecommendation(@PathVariable String activityId) {
         return aiservice.getUserRecommendation(activityId);
     }
+
+    @GetMapping("/exists/{activityId}")
+    public Mono<Boolean> checkRecommendationIsPresent(@PathVariable String activityId) {
+        return aiservice.existsByActivityId(activityId);
+    }
 }

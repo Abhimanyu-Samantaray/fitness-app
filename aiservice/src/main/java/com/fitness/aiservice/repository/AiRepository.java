@@ -8,7 +8,8 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface AiRepository extends ReactiveMongoRepository<Recommendation, String> {
 
-
-    //Mono<Object> findByActivityId(String activityId);
     Mono<Recommendation> findByActivityId(String activityId);
+
+    Mono<Boolean> existsByActivityId(String activityId);
+
 }

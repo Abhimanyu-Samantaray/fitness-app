@@ -6,17 +6,38 @@ import React,{useState, useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "./apiConfig/gateWay";
+import { Eye } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 
 const ActivityList = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("jwt");
-
+    const [spin, setSpin] = useState(null);
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchActivities = async () => {
+    const spinHandle = async  (id) => {
+        setSpin(id);
+
+        try {
+            // 1. wait for DB update to complete
+            await generateRecommendation(id);
+
+            // 2. NOW DB is updated → fetch fresh data
+            await fetchActivities();
+
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setTimeout(() => {
+                setSpin(null);
+            }, 90000); // 30 seconds
+        }
+
+    };
+
+    const fetchActivities = async () => {
             try{
                 const response = await axios.get(`${BASE_URL}/api/activities/`,
                     {
@@ -33,8 +54,10 @@ const ActivityList = () => {
                 setLoading(false);
             }
         }
+
+    useEffect(() => {
         fetchActivities();
-    }, []);
+    }, [token]);
 
     const handleDelete = async (id) => {
 
@@ -62,6 +85,41 @@ const ActivityList = () => {
 
     }
 
+    const generateRecommendation = async (id) => {
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/activities/ai-recommendation/${id}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const data = await response.json();
+            console.log("Response:", data);
+
+            // // optional navigation after API call
+            
+
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+    useEffect(() => {
+        const style = document.createElement("style");
+        style.innerHTML = `
+            @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }, []);
+
     if(loading) return <div className="text-center mt-5"><p className="fw-bold">Loading Activities...</p></div>
 
      return(
@@ -84,6 +142,7 @@ const ActivityList = () => {
                             <table className="table table-hover table-striped mb-0">
                                 <thead className="table-light">
                                     <tr>
+                                        <th>Generate</th>
                                         <th scope="col" className="ps-4">Activity Type</th>
                                         <th scope="col">Duration</th>
                                         <th scope="col">Calories Burned</th>
@@ -98,16 +157,31 @@ const ActivityList = () => {
                                         <tr 
                                             key={act.id}
                                             style={{ cursor: "pointer" }}
-                                            onClick={() => navigate(`/ai-recommendation/${act.id}`)}
                                         >
+                                            <td>
+                                                <RefreshCw className="text-primary ms-4"
+                                                    onClick={() => spinHandle(act.id)}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                        display: "inline-block",
+                                                        animation: spin === act.id ? "spin 0.6s linear" : "none"
+                                                    }}
+                                                />
+                                            </td>
                                             <td className="ps-4">
                                                 <span className="badge rounded-pill bg-info text-dark me-2">{act.type}</span>
                                             </td>
                                             <td>{act.duration} mins</td>
                                             <td>{act.caloriesBurned} Kcal</td>
                                             <td>{act.startTime}</td>
-                                            <td style={{ color: act.status === "SUCCESS" ? "green" : "red" }}>{act.status}!</td>
+                                            <td style={{ color: act.status === "GENERATED" ? "green" : "red" }}>{act.status}!</td>
                                             <td className="text-center">
+                                                <button className="btn btn-outline-primary btn-sm me-2"
+                                                    onClick={() => navigate(`/ai-recommendation/${act.id}`)}
+                                                >
+                                                    <Eye size={18} className="bg-info mb-1 me-1 rounded-2"/>
+                                                    View
+                                                </button>
                                                 <button className="btn btn-outline-danger btn-sm"
                                                     onClick={(e) => {
                                                         e.stopPropagation(); // ✅ prevents row click

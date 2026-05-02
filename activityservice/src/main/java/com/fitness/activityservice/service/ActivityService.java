@@ -44,14 +44,12 @@ public class ActivityService {
         activityObj.setDuration(request.getDuration());
         activityObj.setCaloriesBurned(request.getCaloriesBurned());
         activityObj.setStartTime(request.getStartTime());
-        activityObj.setStatus(ActivityStatus.FAILED);
+        activityObj.setStatus(ActivityStatus.PENDING);
         activityObj.setAdditionalMetrics(request.getAdditionalMetrics());
 
         Activity savedActivity = activityRepository.save(activityObj);
 
         String activityId = savedActivity.getId();
-        apiService.addRecommendation(activityId);
-
         return activityResponse(savedActivity);
     }
 
@@ -94,7 +92,20 @@ public class ActivityService {
                         "No activity found for id: " + activityId));
 
         return getActivityResponse(activity);
+    }
 
+    public void callAIServiceTOAddRecommendation(String activityId) {
+        boolean result = handleRecommendation(activityId);
+        if(!result) {
+            apiService.addRecommendation(activityId);
+            System.out.println("ADD Recommendation is called");
+        }
+    }
+
+    public boolean handleRecommendation(String activityId) {
+
+        return Boolean.TRUE.equals(apiService.getActivityByActivityID(activityId)
+                .block());   // 👈 converts Mono<Boolean> → Boolean
     }
 
     public void deleteActivity(String activityId) {

@@ -6,7 +6,6 @@ import com.fitness.activityservice.service.ActivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -45,5 +44,11 @@ public class ActivityController {
         activityService.updateStatus(activityId, status);
 
         return ResponseEntity.ok(activityId + " Status Update Successfully");
+    }
+
+    @PostMapping("/ai-recommendation/{activityId}")
+    public ResponseEntity<String> getRecommendation(@PathVariable String activityId) {
+        activityService.callAIServiceTOAddRecommendation(activityId);
+        return ResponseEntity.ok("Add Recommendation called Successfully");
     }
 }

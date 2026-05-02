@@ -1,5 +1,6 @@
 package com.fitness.activityservice.service;
 
+import com.fitness.activityservice.dto.Recommendation;
 import com.fitness.activityservice.dto.UserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,9 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -37,76 +41,46 @@ public class ApiService {
                 .doOnError(ex -> System.out.println("UserService error: " + ex.getMessage()));
     }
 
-//    @Async
-//    public void addRecommendation(String activityId) {
-//
-//        Mono.delay(Duration.ofSeconds(3)) // ⏳ wait for DB commit
-//                .flatMap(i ->
-//                        webClient.build()
-//                                .post()
-//                                .uri("http://AISERVICE/api/recommendation/add/{activityId}", activityId)
-//                                .header("X-Internal-Key", internalKey)
-//                                .retrieve()
-//                                .bodyToMono(Void.class)
-//                )
-//                .retryWhen(
-//                        Retry.backoff(10, Duration.ofSeconds(3))
-//                                .maxBackoff(Duration.ofSeconds(30))
-//                                .doBeforeRetry(signal ->
-//                                        log.warn("Retry attempt: {}", signal.totalRetries() + 1))
-//                )
-//                .doOnError(ex -> log.error("AI call failed: {}", ex.getMessage()))
-//                .subscribe();
-//
-//    }
+    public Mono<Boolean> getActivityByActivityID(String activityId) {
 
-    @Async
+        return webClient.build()
+                .get()
+                .uri("http://AISERVICE/api/recommendation/exists/{activityId}", activityId)
+                .header("X-Internal-Key", internalKey)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(res -> log.info("RAW RESPONSE FROM AI: {}", res))
+                .map(res -> Boolean.parseBoolean(res.trim()));
+    }
+
+    private final Set<String> processing = ConcurrentHashMap.newKeySet();
+    private final AtomicInteger dailyCount = new AtomicInteger(0);
+    private static final int DAILY_LIMIT = 20;
+
     public void addRecommendation(String activityId) {
 
-        Mono.delay(Duration.ofSeconds(2)) // small delay is fine
-                .then(
-                        webClient.build()
-                                .post()
-                                .uri("http://AISERVICE/api/recommendation/add/{activityId}", activityId) // 👈 use correct URL
-                                .header("X-Internal-Key", internalKey)
-                                .retrieve()
+        if (dailyCount.get() >= DAILY_LIMIT) {
+            log.warn("🚫 Daily AI limit reached. Skipping call.");
+            return;
+        }
 
-                                // ✅ handle HTTP errors
-                                .onStatus(HttpStatusCode::is5xxServerError, response ->
-                                        response.bodyToMono(String.class)
-                                                .flatMap(body -> {
-                                                    log.error("AI service 5xx error: {}", body);
-                                                    return Mono.error(new RuntimeException("Retryable AI error"));
-                                                })
-                                )
-                                .onStatus(status -> status.value() == 429, response -> {
-                                    log.warn("🚫 Rate limit hit (429). Not retrying.");
-                                    return Mono.error(new IllegalStateException("Rate limit"));
-                                })
+        if (!processing.add(activityId)) {
+            return; // already processing
+        }
 
-                                .toBodilessEntity()
-                )
+        dailyCount.incrementAndGet(); // ✅ FIX 1
 
-                // ✅ timeout
-                .timeout(Duration.ofSeconds(10))
-
-                .retryWhen(
-                        Retry.backoff(2, Duration.ofSeconds(2)) // 👈 reduce to 2
-                                .maxBackoff(Duration.ofSeconds(5))
-                                .filter(ex ->
-                                        ex instanceof RuntimeException &&
-                                                !(ex instanceof IllegalStateException) // 🚫 don't retry 429
-                                )
-                                .doBeforeRetry(signal ->
-                                        log.warn("Retry attempt: {}", signal.totalRetries() + 1))
-                )
-
-                // ✅ logging
+        webClient.build()
+                .post()
+                .uri("http://AISERVICE/api/recommendation/add/{activityId}", activityId)
+                .header("X-Internal-Key", internalKey)
+                .retrieve()
+                .toBodilessEntity()
+                .timeout(Duration.ofSeconds(300))
                 .doOnSuccess(res -> log.info("AI call successful"))
-                .doOnError(ex -> log.error("AI call failed: {}", ex.getMessage()))
+                .doOnError(ex -> log.error("AI call failed", ex))
 
-                // ✅ don't crash thread
-                .onErrorResume(ex -> Mono.empty())
+                .doFinally(signal -> processing.remove(activityId)) // ✅ FIX 3 cleanup
 
                 .subscribe();
     }

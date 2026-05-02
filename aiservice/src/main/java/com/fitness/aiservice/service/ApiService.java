@@ -58,40 +58,23 @@ public class ApiService {
     }
 
     public Mono<String> getAiResponse(String prompt) {
+
+        log.info("🔥 Gemini Prompt: {}", prompt);
+
+        Map<String, Object> requestBody = buildRequestBody(prompt);
+        log.info("📤 Gemini Request Body: {}", requestBody);
+
         return externalWebClient.build()
                 .post()
                 .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + API_KEY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(buildRequestBody(prompt))
+                .bodyValue(requestBody)
                 .retrieve()
-                .onStatus(HttpStatusCode::is5xxServerError, response ->
-                        Mono.error(new RuntimeException("Retryable error: " + response.statusCode()))
-                )
-
-                .onStatus(status -> status.value() == 429, response -> {
-                    log.warn("🚫 Gemini rate limit hit (429). Not retrying.");
-                    return Mono.error(new IllegalStateException("Rate limit"));
-                })
                 .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(8))
-
-                // ✅ smarter retry
-                .retryWhen(
-                        Retry.backoff(2, Duration.ofSeconds(2)) // more attempts
-                                .maxBackoff(Duration.ofSeconds(30))
-                                .filter(ex ->
-                                        ex instanceof IOException ||
-                                                ex instanceof TimeoutException ||
-                                                (ex instanceof WebClientResponseException w &&
-                                                        w.getStatusCode().is5xxServerError())
-                                )
-                                .doBeforeRetry(signal ->
-                                        log.warn("Retrying Gemini API... attempt: {}", signal.totalRetries() + 1))
-                )
-
-                // ✅ final fallback
+                .doOnNext(res -> log.info("📥 Gemini RAW Response: {}", res))
+                .timeout(Duration.ofSeconds(15))
                 .onErrorResume(ex -> {
-                    log.error("Gemini API failed after retries: {}", ex.getMessage());
+                    log.error("Gemini API failed: {}", ex.getMessage());
                     return Mono.just(getFallbackResponse());
                 });
     }
@@ -158,6 +141,7 @@ public class ApiService {
         return webClientBuilder.build()
                 .put()
                 .uri("http://ACTIVITYSERVICE/api/activities/{activityId}/status", activityId)
+                .header("X-Internal-Key", internalKey)
                 .bodyValue(status)
                 .retrieve()
                 .toBodilessEntity()   // ✅ better than bodyToMono(Void.class)

@@ -6,10 +6,11 @@ import com.fitness.aiservice.dto.RecommendationResponse;
 import com.fitness.aiservice.model.Recommendation;
 import com.fitness.aiservice.repository.AiRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class Aiservice {
@@ -41,7 +42,7 @@ public class Aiservice {
                                     .switchIfEmpty(aiRepository.save(entity)) // insert if not exists
                             )
                             .flatMap(savedEntity ->
-                                    apiService.updateActivityStatus(activityId, "SUCCESS")
+                                    apiService.updateActivityStatus(activityId, "GENERATED")
                                             .doOnSuccess(v -> System.out.println("✅ Status updated"))
                                             .doOnError(e -> System.out.println("❌ Update failed: " + e.getMessage()))
                                             .onErrorResume(e -> Mono.empty()) // 👈 important (don’t break flow)
@@ -84,19 +85,36 @@ public class Aiservice {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-
             JsonNode root = mapper.readTree(response);
 
-            // 🔥 Extract Gemini generated text
-            String text = root.path("candidates")
-                    .get(0)
-                    .path("content")
-                    .path("parts")
-                    .get(0)
-                    .path("text")
-                    .asText();
+            // 🚨 Check if API returned error
+            if (root.has("error")) {
+                throw new RuntimeException("Gemini API error: " + root.path("error").toString());
+            }
 
-            // 🔥 Convert AI JSON string → DTO
+            JsonNode candidates = root.path("candidates");
+
+            if (candidates == null || !candidates.isArray() || candidates.isEmpty()) {
+                throw new RuntimeException("Invalid Gemini response: candidates missing");
+            }
+
+            JsonNode firstCandidate = candidates.get(0);
+            if (firstCandidate == null) {
+                throw new RuntimeException("Invalid Gemini response: candidate is null");
+            }
+
+            JsonNode parts = firstCandidate.path("content").path("parts");
+
+            if (parts == null || !parts.isArray() || parts.isEmpty()) {
+                throw new RuntimeException("Invalid Gemini response: parts missing");
+            }
+
+            String text = parts.get(0).path("text").asText(null);
+
+            if (text == null || text.isBlank()) {
+                throw new RuntimeException("Gemini returned empty text");
+            }
+
             return mapper.readValue(text, RecommendationResponse.class);
 
         } catch (Exception e) {
@@ -106,5 +124,9 @@ public class Aiservice {
 
     public Mono<Recommendation> getUserRecommendation(String activityId) {
         return aiRepository.findByActivityId(activityId);
+    }
+
+    public Mono<Boolean> existsByActivityId(String activityId) {
+        return aiRepository.existsByActivityId(activityId);
     }
 }

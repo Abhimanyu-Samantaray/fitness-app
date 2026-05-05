@@ -25,9 +25,15 @@ const ActivityList = () => {
             await generateRecommendation(id);
 
             // 2. NOW DB is updated → fetch fresh data
-            setTimeout(async () => {
-                await fetchActivities();
-            }, 1500);
+           const interval = setInterval(async () => {
+                const res = await fetchActivities();
+
+                const updated = res.find(a => a.id === id);
+
+                if (updated.status === "GENERATED") {
+                    clearInterval(interval);
+                }
+            }, 2000);
 
         } catch (err) {
             console.log(err);

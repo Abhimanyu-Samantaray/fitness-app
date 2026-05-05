@@ -20,6 +20,16 @@ const ActivityList = () => {
     const spinHandle = async  (id) => {
         setSpin(id);
 
+        // ✅ 1. Optimistic update (immediately update UI)
+        setActivities(prev =>
+            prev.map(a =>
+                a.id === id
+                    ? { ...a, status: "GENERATING..." }
+                    : a
+            )
+        );
+
+
         try {
             // 1. wait for DB update to complete
             await generateRecommendation(id);
